@@ -13,9 +13,13 @@ By the end of this week, you will be able to:
 * Train and evaluate your model's performance.
 * Gain practical experience using Git for version control in a project setting.
 
-## 🚀 Getting Started: Setting Up Your Workspace
+## 💡 What You'll Need
 
-Before we begin, you need to create your own copy of this project. This will give you a personal workspace where you can save your code and track your progress.
+* A basic understanding of **Python**. You should be comfortable with its fundamental syntax, data structures (like lists and dictionaries), and how to write functions. We (and Google) are always here to help with anything you might get stuck with. It's also a great idea to talk to each other for help - that's how a real research environment works!
+
+* Display screen equipment you're happy with - we will help you get set up on your laptops.
+
+## 🚀 Getting Started: Initial Setup
 
 ### Step 1: Create a GitHub Account
 If you don't already have one, you'll need to create a free GitHub account. This is an essential tool for software developers.
@@ -39,20 +43,52 @@ Now, you need to get the files onto your computer. This is called "cloning".
     ```bash
     git clone [URL_YOU_COPIED_FROM_YOUR_FORK]
     ```
-4.  This will create a folder on your computer with all the project files. You're all set up!
+4.  This will create a folder on your computer with all the project files.
+
+**Remember to commit your progress:** Use Git to commit your changes regularly. This is great practice and helps you track your work.
+
+     ```bash
+    git add .
+    git commit -m "Completed Day 1 - data preprocessing"
+    ```
+---
+
+## 💻 Setting Up Your Development Environment
+
+Next, let's install the tools you will need for coding. We will use Visual Studio Code as our editor and set it up for Python and Jupyter Notebooks.
+
+### Part 1: Install Visual Studio Code (VS Code)
+VS Code is a modern, powerful, and free code editor.
+
+1.  Download VS Code from the official website: [https://code.visualstudio.com/](https://code.visualstudio.com/).
+2.  Run the installer and follow the on-screen instructions. Accepting the default settings is fine.
+
+### Part 2: Install Python
+You need Python installed on your computer to run the code.
+
+1.  Download the latest version of Python from [https://www.python.org/downloads/](https://www.python.org/downloads/).
+2.  Run the installer.
+3.  **Important:** On the first screen of the installer, make sure to check the box that says **"Add Python to PATH"** or **"Add python.exe to PATH"**. This will make it much easier to run Python from the command line.
+4.  Continue with the default installation.
+
+### Part 3: Set Up VS Code for Python & Jupyter
+Now we configure VS Code to work with Python files and Jupyter Notebooks.
+
+1.  **Open VS Code.**
+2.  **Open your cloned project folder:** In VS Code, go to `File > Open Folder...` and select the folder you created when you cloned the repository.
+3.  **Install Extensions:** Click on the Extensions icon in the Activity Bar on the side of the window (it looks like four squares). Search for and install the following two extensions from Microsoft:
+    * `Python` (ms-python.python)
+    * `Jupyter` (ms-toolsai.jupyter)
+4.  **Install Jupyter package:** Open a new terminal directly within VS Code (`Terminal > New Terminal`). In the terminal window that appears at the bottom, run the following command to install the necessary package for running notebooks:
+    ```bash
+    pip install notebook
+    ```
+5.  You are now ready to code! You can create and run `.py` files and `.ipynb` (Jupyter Notebook) files.
 
 ---
-**Remember to commit your progress:** Use Git to commit your changes regularly. This is great practice and helps you track your work.
-    ```bash
-    git add .
-    git commit -m "Completed Day 1 data preprocessing"
-    ```
 
-## 💡 What You'll Need
 
-* **Required:** A basic understanding of **Python**. You should be comfortable with its fundamental syntax, data structures (like lists and dictionaries), and how to write functions. We (and Google) are always here to help with anything you might get stuck with. 
 
-* **Provided:** We'll also give you an introduction to a library called **Pandas** for data handling and **Git** for version control. No prior experience with these tools is necessary, though you might already have some!
 
 ## 🗓️ Workflow
 
@@ -60,6 +96,8 @@ Now, you need to get the files onto your computer. This is called "cloning".
   
 
 * **Task 1: Pandas**
+
+
 
 * **Task 2: Git?**
     * Connecting layers to form a network.
