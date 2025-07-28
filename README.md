@@ -83,7 +83,14 @@ Now we configure VS Code to work with Python files and Jupyter Notebooks.
     ```bash
     pip install notebook
     ```
-5.  You are now ready to code! You can create and run `.py` files and `.ipynb` (Jupyter Notebook) files.
+
+5.  **Select the Python Kernel:** The first time you open a Jupyter Notebook (`.ipynb` file), you need to tell VS Code which Python installation to use. This is called "selecting a kernel".
+    * Open a notebook file from the project (e.g., in the `Day1_DataPrep` folder).
+    * Look in the top-right corner of the screen. If you see a button that says **"Select Kernel"**, click it.
+    * A dropdown list will appear. Choose the Python environment you installed in Part 2. It should be listed as something like `Python 3.x.x`.
+    * Once selected, you are ready to run the code cells in the notebook by clicking the 'play' button next to each cell. VS Code will remember your choice for this project.
+
+6.  You are now ready to code! You can create and run `.py` files and `.ipynb` (Jupyter Notebook) files.
 
 ---
 
@@ -92,28 +99,13 @@ Now we configure VS Code to work with Python files and Jupyter Notebooks.
 
 ## 🗓️ Workflow
 
-* **Task 0: Downloading / installing what you need**
-  
 
 * **Task 1: Pandas**
 
+Navigate to the `Task 1: pandas` folder. This notebook will get you familiar with python and with pandas. 
 
+* **Task 2: Neural Network**
 
-* **Task 2: Git?**
-    * Connecting layers to form a network.
-    * Implementing the forward pass (making predictions).
-    * **Task:** Code the `NeuralNetwork` class and the `feedforward` method.
+Navigate to the `Task 2: Neural network` folder. The [pdf file](Task 2: Neural network/work_exp_proj_ai/work_exp_proj_ai.pdf) file will guide you through the main segment of your work experience.
 
-* **Day 4: Training the Network**
-    * Introduction to loss functions and backpropagation (the learning part!).
-    * **Task:** Implement the `backpropagate` and `train` methods.
-
-* **Day 5: Evaluation & Wrap-up**
-    * Putting it all together: training and testing your network on real data.
-    * Evaluating your model's accuracy.
-    * **Task:** Run the full experiment, analyze your results, and make final commits.
-
-
-5.  **Ask Questions:** Don't hesitate to ask questions! Machine learning can be challenging, and we're here to help.
-
-We're excited to have you with us for the week. Let's build something amazing!
+Good luck!
