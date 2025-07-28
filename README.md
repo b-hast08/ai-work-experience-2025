@@ -1,4 +1,4 @@
-# Building a Neural Network: A One-Week Course
+# STFC Hartree Centre: AI work experience
 
 Welcome to STFC Hartree Centre! We hope you enjoy your week of work experience with the AI Group. You'll find a [Schedule](Schedule.pdf) for the week here too to give you an idea of what to expect. This repository also contains all the materials you'll need.
 
