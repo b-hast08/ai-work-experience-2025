@@ -52,7 +52,7 @@ Now, you need to get the files onto your computer. This is called "cloning".
     git commit -m "Completed Day 1 - data preprocessing"
     ```
 
-Here's a quick video to explain git in a little more detail - https://www.youtube.com/watch?v=e9lnsKot_SQ
+Here's a quick video to explain git in a little more detail - [https://www.youtube.com/watch?v=e9lnsKot_SQ](https://www.youtube.com/watch?v=e9lnsKot_SQ).
 
 ## 💻 Setting Up Your Development Environment
 
