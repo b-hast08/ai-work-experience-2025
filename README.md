@@ -103,10 +103,10 @@ Now we configure VS Code to work with Python files and Jupyter Notebooks.
 
 * **Task 1: Pandas**
 
-Navigate to the `Task 1: pandas` folder. This notebook will get you familiar with python and with pandas. 
+Navigate to the `Task 1: pandas` folder. This notebook will get you familiar with the pandas library, and get the python brain whirring. 
 
 * **Task 2: Neural Network**
 
-Navigate to the `Task 2: Neural network` folder. The [pdf file](Task 2: Neural network/work_exp_proj_ai/work_exp_proj_ai.pdf) file will guide you through the main segment of your work experience.
+Navigate to the `Task 2: Neural network` folder. The [pdf file](Task 2: Neural network/work_exp_proj_ai/work_exp_proj_ai.pdf) file will guide you through the main segment of your work experience. 
 
 Good luck!
