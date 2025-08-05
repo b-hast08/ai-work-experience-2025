@@ -9,6 +9,16 @@ try:
 except NameError:
     xrange = range  # Python 3
 
+def ReLU(x):
+  if x < 0:
+    return 0
+  elif x >= 0:
+    return x
+  else:
+    return None
+   
+def sig(x):
+  return 1/(1 + np.exp(-x))
 
 class SimpleNet(object):
     """
@@ -64,6 +74,7 @@ class SimpleNet(object):
         - reg: Regularization strength.
 
         Returns:
+    
         If y is None, return a matrix scores of shape (N, C) where scores[i, c] is
         the score for class c on input X[i].
 
@@ -74,22 +85,25 @@ class SimpleNet(object):
           with respect to the loss function; has the same keys as self.params.
         """
         
+
         # Unpack variables from the params dictionary
         W1, b1 = self.params['W1'], self.params['b1'] #shape 4,10 -- 10
         W2, b2 = self.params['W2'], self.params['b2'] #shapes 10,3 -- 3
         N, D = X.shape
 
         # Compute the forward pass
-        scores = 0.
-        
+ 
         #############################################################################
-        # TODO: Perform the forward pass, computing the class probabilities for the #
+        #
+        # Perform the forward pass, computing the class probabilities for the 
         # input. Store the result in the scores variable, which should be an array  #
         # of shape (N, C).                                                          #
         #############################################################################
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        pass    
+        hidden_layer = np.maximum(0, X.dot(W1) + b1)  # ReLU activation
+        scores = hidden_layer.dot(W2) + b2 
+        # scores = sig(scores)           # Class scores
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 
@@ -111,7 +125,7 @@ class SimpleNet(object):
         # Implement the loss for the softmax output layer
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        pass
+
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         # Backward pass: compute gradients
@@ -124,12 +138,24 @@ class SimpleNet(object):
         ##############################################################################
 
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        pass
+        dscores = probs
+        dscores[np.arange(N), y] -= 1
+        dscores /= N
+
+        # Backprop into W2 and b2
+        grads['W2'] = hidden_layer.T.dot(dscores) + reg * W2
+        grads['b2'] = np.sum(dscores, axis=0)
+
+        # Backprop into hidden layer
+        dhidden = dscores.dot(W2.T)
+        dhidden[hidden_layer <= 0] = 0  # Derivative of ReLU
+
+        # Backprop into W1 and b1
+        grads['W1'] = X.T.dot(dhidden) + reg * W1
+        grads['b1'] = np.sum(dhidden, axis=0)
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return loss, grads
-
-
 
     def train(self, X, y, X_val, y_val,
               learning_rate=1e-3, learning_rate_decay=0.95,
@@ -172,7 +198,9 @@ class SimpleNet(object):
             #########################################################################
             
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-            pass
+            indices = np.random.choice(num_train, batch_size, replace=True)
+            X_batch = X[indices]
+            y_batch = y[indices]
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
             # Compute loss and gradients using the current minibatch
@@ -187,7 +215,8 @@ class SimpleNet(object):
             #########################################################################
             
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-            pass
+            for param in self.params:
+              self.params[param] -= learning_rate * grads[param]
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
             if verbose and it % 100 == 0:
@@ -233,7 +262,9 @@ class SimpleNet(object):
         ###########################################################################
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        pass
+        hidden = np.maximum(0, X.dot(self.params['W1']) + self.params['b1'])
+        scores = hidden.dot(self.params['W2']) + self.params['b2']
+        y_pred = np.argmax(scores, axis=1)
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return y_pred

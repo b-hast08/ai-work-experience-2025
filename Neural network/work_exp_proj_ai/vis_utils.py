@@ -54,7 +54,7 @@ def vis_grid(Xs):
             if n < N:
                 G[y*H+y:(y+1)*H+y, x*W+x:(x+1)*W+x, :] = Xs[n,:,:,:]
                 n += 1
-    # normalize to [0,1]
+    #normalize to [0,1]
     maxg = G.max()
     ming = G.min()
     G = (G - ming)/(maxg-ming)

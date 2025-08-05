@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from simple_nn import SimpleNet 
 from gradient_check import eval_numerical_gradient 
-from data_utils import get_CIFAR10_data 
+#from data_utils import get_CIFAR10_data 
 from vis_utils import visualize_grid
 
 
@@ -76,6 +76,8 @@ print(correct_scores,'\n')
 print('Difference between your scores and correct scores:')
 print(np.sum(np.abs(scores - correct_scores)))
 
+exit(-1)
+
 
 # Forward pass: compute the loss. In the same function, implement the second
 # part that computes the data and regularization loss.
@@ -139,36 +141,36 @@ plt.show()
 #
 # Invoke the get_CIFAR10_data function to get the data.
 
-X_train, y_train, X_val, y_val, X_test, y_test = get_CIFAR10_data()
-print('Train data shape: ', X_train.shape)
-print('Train labels shape: ', y_train.shape)
-print('Validation data shape: ', X_val.shape)
-print('Validation labels shape: ', y_val.shape)
-print('Test data shape: ', X_test.shape)
-print('Test labels shape: ', y_test.shape)
+# X_train, y_train, X_val, y_val, X_test, y_test = get_CIFAR10_data()
+# print('Train data shape: ', X_train.shape)
+# print('Train labels shape: ', y_train.shape)
+# print('Validation data shape: ', X_val.shape)
+# print('Validation labels shape: ', y_val.shape)
+# print('Test data shape: ', X_test.shape)
+# print('Test labels shape: ', y_test.shape)
 
-# Visualize some images to get a feel for the data
-plt.figure(2)
-plt.imshow(visualize_grid(X_train[:100, :].reshape(100, 32,32, 3), padding=3).astype('uint8'))
-plt.gca().axis('off')
-plt.show()
+# # Visualize some images to get a feel for the data
+# plt.figure(2)
+# plt.imshow(visualize_grid(X_train[:100, :].reshape(100, 32,32, 3), padding=3).astype('uint8'))
+# plt.gca().axis('off')
+# plt.show()
 
-# Create a neural network with the right configuration for CIFAR-10
-input_size = 32 * 32 * 3
-hidden_size = 50
-num_classes = 10
-net = SimpleNet(input_size, hidden_size, num_classes)
+# # Create a neural network with the right configuration for CIFAR-10
+# input_size = 32 * 32 * 3
+# hidden_size = 50
+# num_classes = 10
+# net = SimpleNet(input_size, hidden_size, num_classes)
 
-# Train a network with SGD. In addition, the learning rate will be adjusted with
-# an exponential learning rate schedule as optimization proceeding: after each
-# epoch, the learning rate will be reduced by multiplying it by a decay rate.
-stats = net.train(X_train, y_train, X_val, y_val, num_iters=1000,
-                  batch_size=200, learning_rate=1e-4, learning_rate_decay=0.95,
-                  reg=0.25, verbose=True)
+# # Train a network with SGD. In addition, the learning rate will be adjusted with
+# # an exponential learning rate schedule as optimization proceeding: after each
+# # epoch, the learning rate will be reduced by multiplying it by a decay rate.
+# stats = net.train(X_train, y_train, X_val, y_val, num_iters=1000,
+#                   batch_size=200, learning_rate=1e-4, learning_rate_decay=0.95,
+#                   reg=0.25, verbose=True)
 
-# Predict on the validation set
-val_acc = (net.predict(X_val) == y_val).mean()
-print('Validation accuracy: ', val_acc)
+# # Predict on the validation set
+# val_acc = (net.predict(X_val) == y_val).mean()
+# print('Validation accuracy: ', val_acc)
 
 # ------------------------------------------------------
 # Debug the training
@@ -208,6 +210,37 @@ plt.show()
 plt.figure(5)
 show_net_weights(net)
 
+import itertools
+
+# Grid of hyperparameters
+learning_rates = [1e-4, 5e-4, 1e-3, 5e-3]
+regularization_strengths = [0.25, 0.5, 1.0]
+hidden_sizes = [100, 200, 400]
+
+best_val_acc = -1
+results = {}
+
+for hs, lr, reg in itertools.product(hidden_sizes, learning_rates, regularization_strengths):
+    print(f'Training with hidden_size={hs}, learning_rate={lr}, reg={reg}')
+    
+    net = SimpleNet(input_size, hs, num_classes)
+    stats = net.train(X_train, y_train, X_val, y_val,
+                      num_iters=2000,
+                      batch_size=200,
+                      learning_rate=lr,
+                      learning_rate_decay=0.95,
+                      reg=reg,
+                      verbose=False)
+    
+    val_acc = (net.predict(X_val) == y_val).mean()
+    train_acc = (net.predict(X_train) == y_train).mean()
+    results[(hs, lr, reg)] = (train_acc, val_acc)
+    
+    print(f'Train acc: {train_acc}, Val acc: {val_acc}')
+    
+    if val_acc > best_val_acc:
+        best_val_acc = val_acc
+        best_net = net
 # ------------------------------------------------------
 # Tune your hyperparameters
 # ------------------------------------------------------
