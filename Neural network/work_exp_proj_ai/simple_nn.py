@@ -96,14 +96,23 @@ class SimpleNet(object):
         #############################################################################
         #
         # Perform the forward pass, computing the class probabilities for the 
+        scores = 0.
+        
+                #############################################################################
+        # TODO: Perform the forward pass, computing the class probabilities for the #
         # input. Store the result in the scores variable, which should be an array  #
         # of shape (N, C).                                                          #
         #############################################################################
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        hidden_layer = np.maximum(0, X.dot(W1) + b1)  # ReLU activation
-        scores = hidden_layer.dot(W2) + b2 
-        # scores = sig(scores)           # Class scores
+
+        z_2 = np.dot(X, W1) + b1            #(5 , 10)
+        z_2[z_2 < 0] = 0                    #Relu
+        a_2 = z_2                           #Relu
+        z_3 = np.dot(a_2, W2) + b2          #(5 , 3)
+
+        scores = np.apply_along_axis(lambda x: np.exp(x) / np.sum(np.exp(x)), 1, z_3) #softmax
+    
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 
@@ -125,7 +134,17 @@ class SimpleNet(object):
         # Implement the loss for the softmax output layer
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+           # Compute the softmax loss
+        shifted_logits = scores - np.max(scores, axis=1, keepdims=True)  # stability
+        Z = np.sum(np.exp(shifted_logits), axis=1, keepdims=True)
+        log_probs = shifted_logits - np.log(Z)
+        probs = np.exp(log_probs)
+        correct_logprobs = -log_probs[np.arange(N), y]
+        data_loss = np.sum(correct_logprobs) / N
 
+    # Regularization loss
+        reg_loss = reg * (np.sum(W1 * W1) + np.sum(W2 * W2))
+        loss = data_loss + reg_loss
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         # Backward pass: compute gradients
@@ -143,12 +162,12 @@ class SimpleNet(object):
         dscores /= N
 
         # Backprop into W2 and b2
-        grads['W2'] = hidden_layer.T.dot(dscores) + reg * W2
+        grads['W2'] = z_2.T.dot(dscores) + reg * W2
         grads['b2'] = np.sum(dscores, axis=0)
 
         # Backprop into hidden layer
         dhidden = dscores.dot(W2.T)
-        dhidden[hidden_layer <= 0] = 0  # Derivative of ReLU
+        dhidden[z_2 <= 0] = 0  # Derivative of ReLU
 
         # Backprop into W1 and b1
         grads['W1'] = X.T.dot(dhidden) + reg * W1

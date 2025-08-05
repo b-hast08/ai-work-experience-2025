@@ -76,7 +76,6 @@ print(correct_scores,'\n')
 print('Difference between your scores and correct scores:')
 print(np.sum(np.abs(scores - correct_scores)))
 
-exit(-1)
 
 
 # Forward pass: compute the loss. In the same function, implement the second
@@ -101,7 +100,7 @@ for param_name in grads:
     f = lambda W: net.loss(X, y, reg=0.05)[0]
     param_grad_num = eval_numerical_gradient(f, net.params[param_name], verbose=False)
     print('%s max relative error: %e' % (param_name, rel_error(param_grad_num, grads[param_name])))
-
+exit(-1)
 
 #-------------------------------------------------------
 # Train the network
