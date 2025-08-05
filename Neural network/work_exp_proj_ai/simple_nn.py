@@ -82,14 +82,21 @@ class SimpleNet(object):
         # Compute the forward pass
         scores = 0.
         
-        #############################################################################
+                #############################################################################
         # TODO: Perform the forward pass, computing the class probabilities for the #
         # input. Store the result in the scores variable, which should be an array  #
         # of shape (N, C).                                                          #
         #############################################################################
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        pass    
+
+        z_2 = np.dot(X, W1) + b1            #(5 , 10)
+        z_2[z_2 < 0] = 0                    #Relu
+        a_2 = z_2                           #Relu
+        z_3 = np.dot(a_2, W2) + b2          #(5 , 3)
+
+        scores = np.apply_along_axis(lambda x: np.exp(x) / np.sum(np.exp(x)), 1, z_3) #softmax
+    
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
 
@@ -111,8 +118,17 @@ class SimpleNet(object):
         # Implement the loss for the softmax output layer
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+
+        J = -np.log(
+                    np.apply_along_axis(lambda x: np.exp(x) / np.sum(np.exp(x)), 1, z_3)
+                    )
+        cross_entropy = np.mean(J[np.arange(len(y)), y])
+
+        l2 = np.sum(np.power((W1),2)) + np.sum(np.power((W2),2))
+        l2 = reg * l2
+        loss = cross_entropy + l2 
         pass
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+       
 
         # Backward pass: compute gradients
         grads = {}
