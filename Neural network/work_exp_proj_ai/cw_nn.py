@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 from simple_nn import SimpleNet 
 from gradient_check import eval_numerical_gradient 
-#from data_utils import get_CIFAR10_data 
+from data_utils import get_CIFAR10_data 
 from vis_utils import visualize_grid
 
 
@@ -100,7 +100,8 @@ for param_name in grads:
     f = lambda W: net.loss(X, y, reg=0.05)[0]
     param_grad_num = eval_numerical_gradient(f, net.params[param_name], verbose=False)
     print('%s max relative error: %e' % (param_name, rel_error(param_grad_num, grads[param_name])))
-exit(-1)
+
+
 
 #-------------------------------------------------------
 # Train the network
@@ -140,37 +141,37 @@ plt.show()
 #
 # Invoke the get_CIFAR10_data function to get the data.
 
-# X_train, y_train, X_val, y_val, X_test, y_test = get_CIFAR10_data()
-# print('Train data shape: ', X_train.shape)
-# print('Train labels shape: ', y_train.shape)
-# print('Validation data shape: ', X_val.shape)
-# print('Validation labels shape: ', y_val.shape)
-# print('Test data shape: ', X_test.shape)
-# print('Test labels shape: ', y_test.shape)
+X_train, y_train, X_val, y_val, X_test, y_test = get_CIFAR10_data()
+print('Train data shape: ', X_train.shape)
+print('Train labels shape: ', y_train.shape)
+print('Validation data shape: ', X_val.shape)
+print('Validation labels shape: ', y_val.shape)
+print('Test data shape: ', X_test.shape)
+print('Test labels shape: ', y_test.shape)
 
-# # Visualize some images to get a feel for the data
-# plt.figure(2)
-# plt.imshow(visualize_grid(X_train[:100, :].reshape(100, 32,32, 3), padding=3).astype('uint8'))
-# plt.gca().axis('off')
-# plt.show()
+# Visualize some images to get a feel for the data
+plt.figure(2)
+plt.imshow(visualize_grid(X_train[:100, :].reshape(100, 32,32, 3), padding=3).astype('uint8'))
+plt.gca().axis('off')
+plt.show()
 
-# # Create a neural network with the right configuration for CIFAR-10
-# input_size = 32 * 32 * 3
-# hidden_size = 50
-# num_classes = 10
-# net = SimpleNet(input_size, hidden_size, num_classes)
+# Create a neural network with the right configuration for CIFAR-10
+input_size = 32 * 32 * 3
+hidden_size = 50
+num_classes = 10
+net = SimpleNet(input_size, hidden_size, num_classes)
 
-# # Train a network with SGD. In addition, the learning rate will be adjusted with
-# # an exponential learning rate schedule as optimization proceeding: after each
-# # epoch, the learning rate will be reduced by multiplying it by a decay rate.
-# stats = net.train(X_train, y_train, X_val, y_val, num_iters=1000,
-#                   batch_size=200, learning_rate=1e-4, learning_rate_decay=0.95,
-#                   reg=0.25, verbose=True)
+# Train a network with SGD. In addition, the learning rate will be adjusted with
+# an exponential learning rate schedule as optimization proceeding: after each
+# epoch, the learning rate will be reduced by multiplying it by a decay rate.
+stats = net.train(X_train, y_train, X_val, y_val, num_iters=1000,
+                  batch_size=200, learning_rate=1e-4, learning_rate_decay=0.95,
+                  reg=0.25, verbose=True)
 
-# # Predict on the validation set
-# val_acc = (net.predict(X_val) == y_val).mean()
-# print('Validation accuracy: ', val_acc)
-
+# Predict on the validation set
+val_acc = (net.predict(X_val) == y_val).mean()
+print('Validation accuracy: ', val_acc)
+exit(-1)
 # ------------------------------------------------------
 # Debug the training
 # ------------------------------------------------------

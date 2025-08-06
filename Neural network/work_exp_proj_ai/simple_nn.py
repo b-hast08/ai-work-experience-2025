@@ -9,16 +9,16 @@ try:
 except NameError:
     xrange = range  # Python 3
 
-def ReLU(x):
-  if x < 0:
-    return 0
-  elif x >= 0:
-    return x
-  else:
-    return None
+# def ReLU(x):
+#   if x < 0:
+#     return 0
+#   elif x >= 0:
+#     return x
+#   else:
+#     return None
    
-def sig(x):
-  return 1/(1 + np.exp(-x))
+# def sig(x):
+#   return 1/(1 + np.exp(-x))
 
 class SimpleNet(object):
     """
@@ -98,7 +98,7 @@ class SimpleNet(object):
         # Perform the forward pass, computing the class probabilities for the 
         scores = 0.
         
-                #############################################################################
+        #############################################################################
         # TODO: Perform the forward pass, computing the class probabilities for the #
         # input. Store the result in the scores variable, which should be an array  #
         # of shape (N, C).                                                          #
@@ -134,16 +134,12 @@ class SimpleNet(object):
         # Implement the loss for the softmax output layer
         
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-           # Compute the softmax loss
-        shifted_logits = scores - np.max(scores, axis=1, keepdims=True)  # stability
-        Z = np.sum(np.exp(shifted_logits), axis=1, keepdims=True)
-        log_probs = shifted_logits - np.log(Z)
-        probs = np.exp(log_probs)
-        correct_logprobs = -log_probs[np.arange(N), y]
-        data_loss = np.sum(correct_logprobs) / N
+        # stability
+        shifted_logits = -np.log(scores)
+        data_loss = np.mean(shifted_logits[np.arange(N), y])
 
-    # Regularization loss
-        reg_loss = reg * (np.sum(W1 * W1) + np.sum(W2 * W2))
+        # Regularization loss
+        reg_loss = reg * (np.sum(np.power((W1),2)) + np.sum(np.power((W2),2)))
         loss = data_loss + reg_loss
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -157,29 +153,30 @@ class SimpleNet(object):
         ##############################################################################
 
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        dscores = probs
+        dscores = scores
         dscores[np.arange(N), y] -= 1
-        dscores /= N
 
         # Backprop into W2 and b2
-        grads['W2'] = z_2.T.dot(dscores) + reg * W2
-        grads['b2'] = np.sum(dscores, axis=0)
+        grads['W2'] = (z_2.T.dot(dscores)/ N) + reg * W2
+        grads['b2'] = (np.sum(dscores, axis=0)) / N
 
         # Backprop into hidden layer
         dhidden = dscores.dot(W2.T)
         dhidden[z_2 <= 0] = 0  # Derivative of ReLU
 
         # Backprop into W1 and b1
-        grads['W1'] = X.T.dot(dhidden) + reg * W1
-        grads['b1'] = np.sum(dhidden, axis=0)
+        grads['W1'] = (X.T.dot(dhidden)/ N) + reg * W1
+        grads['b1'] = (np.sum(dhidden, axis=0)) / N
+        #add reg term
+        grads['W2'] += reg *  W2
+        grads['W1'] += reg *  W1
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
         return loss, grads
 
     def train(self, X, y, X_val, y_val,
               learning_rate=1e-3, learning_rate_decay=0.95,
               reg=5e-6, num_iters=100,
-              batch_size=200, verbose=False):
+              batch_size=200, verbose=True):
         """
         Train this neural network using stochastic gradient descent.
 
@@ -217,9 +214,10 @@ class SimpleNet(object):
             #########################################################################
             
             # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-            indices = np.random.choice(num_train, batch_size, replace=True)
+            indices = np.random.choice(num_train, batch_size)
             X_batch = X[indices]
             y_batch = y[indices]
+
             # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
             # Compute loss and gradients using the current minibatch
@@ -283,7 +281,7 @@ class SimpleNet(object):
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         hidden = np.maximum(0, X.dot(self.params['W1']) + self.params['b1'])
         scores = hidden.dot(self.params['W2']) + self.params['b2']
-        y_pred = np.argmax(scores, axis=1)
+        y_pred = np.argmax(scores)
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return y_pred
