@@ -176,7 +176,7 @@ class SimpleNet(object):
     def train(self, X, y, X_val, y_val,
               learning_rate=1e-3, learning_rate_decay=0.95,
               reg=5e-6, num_iters=100,
-              batch_size=200, verbose=True):
+              batch_size=200, verbose=False):
         """
         Train this neural network using stochastic gradient descent.
 
@@ -281,7 +281,7 @@ class SimpleNet(object):
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         hidden = np.maximum(0, X.dot(self.params['W1']) + self.params['b1'])
         scores = hidden.dot(self.params['W2']) + self.params['b2']
-        y_pred = np.argmax(scores)
+        y_pred = np.argmax(scores, axis = 1)
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         return y_pred

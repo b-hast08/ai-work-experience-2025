@@ -142,6 +142,7 @@ plt.show()
 # Invoke the get_CIFAR10_data function to get the data.
 
 X_train, y_train, X_val, y_val, X_test, y_test = get_CIFAR10_data()
+y_val_test = np.array(y_val)
 print('Train data shape: ', X_train.shape)
 print('Train labels shape: ', y_train.shape)
 print('Validation data shape: ', X_val.shape)
@@ -209,41 +210,41 @@ plt.show()
 plt.figure(5)
 show_net_weights(net)
 
-import itertools
+# import itertools
 
-# Grid of hyperparameters
-learning_rates = [1e-4, 5e-4, 1e-3, 5e-3]
-regularization_strengths = [0.25, 0.5, 1.0]
-hidden_sizes = [100, 200, 400]
+# # Grid of hyperparameters
+# learning_rates = [1e-3, 5e-4, 1.5e-3, 2e-3]
+# regularization_strengths = [0.15 ,0.25, 0.5]
+# hidden_sizes = [100, 200, 400]
 
-best_val_acc = -1
-results = {}
+# best_val_acc = -1
+# results = {}
 
-for hs, lr, reg in itertools.product(hidden_sizes, learning_rates, regularization_strengths):
-    print(f'Training with hidden_size={hs}, learning_rate={lr}, reg={reg}')
+# for hs, lr, reg in itertools.product(hidden_sizes, learning_rates, regularization_strengths):
+#     print(f'Training with hidden_size={hs}, learning_rate={lr}, reg={reg}')
     
-    net = SimpleNet(input_size, hs, num_classes)
-    stats = net.train(X_train, y_train, X_val, y_val,
-                      num_iters=2000,
-                      batch_size=200,
-                      learning_rate=lr,
-                      learning_rate_decay=0.95,
-                      reg=reg,
-                      verbose=False)
+#     net = SimpleNet(input_size, hs, num_classes)
+#     stats = net.train(X_train, y_train, X_val, y_val,
+#                       num_iters=2000,
+#                       batch_size=200,
+#                       learning_rate=lr,
+#                       learning_rate_decay=0.95,
+#                       reg=reg,
+#                       verbose=False)
     
-    val_acc = (net.predict(X_val) == y_val).mean()
-    train_acc = (net.predict(X_train) == y_train).mean()
-    results[(hs, lr, reg)] = (train_acc, val_acc)
+#     val_acc = (net.predict(X_val) == y_val).mean()
+#     train_acc = (net.predict(X_train) == y_train).mean()
+#     results[(hs, lr, reg)] = (train_acc, val_acc)
     
-    print(f'Train acc: {train_acc}, Val acc: {val_acc}')
+#     print(f'Train acc: {train_acc}, Val acc: {val_acc}')
     
-    if val_acc > best_val_acc:
-        best_val_acc = val_acc
-        best_net = net
+#     if val_acc > best_val_acc:
+#         best_val_acc = val_acc
+#         best_net = net
 # ------------------------------------------------------
 # Tune your hyperparameters
 # ------------------------------------------------------
-#
+
 # What's wrong? Looking at the visualizations above, you can see that the
 # loss is decreasing more or less linearly, which seems to suggest that the
 # learning rate may be too low. Moreover, there is no gap between the training
@@ -286,7 +287,60 @@ best_net = None # store the best model into this
 
 # Tune the hyperparameters and add your own techniques
 # ***** your code here *****
-pass
+# Number of samples from the distribution
+num_hyperparam_samples = 20
+
+# Normal distribution parameters (mean and std) for each hyperparameter
+learning_rate_mean, learning_rate_std = 1e-3, 5e-4
+regularization_mean, regularization_std = 0.3, 0.1
+hidden_layer_size_mean, hidden_layer_size_std = 250, 100
+
+best_validation_accuracy = -1
+training_results = {}
+
+# Sample hyperparameters from normal distributions
+for _ in range(num_hyperparam_samples):
+    # Sample and clip to stay within reasonable bounds
+    sampled_learning_rate = np.clip(
+        np.random.normal(learning_rate_mean, learning_rate_std),
+        1e-4, 5e-3
+    )
+    sampled_regularization = np.clip(
+        np.random.normal(regularization_mean, regularization_std),
+        0.05, 1.0
+    )
+    sampled_hidden_layer_size = int(np.clip(
+        np.random.normal(hidden_layer_size_mean, hidden_layer_size_std),
+        50, 500
+    ))
+
+    print(f'Training with hidden_size={sampled_hidden_layer_size}, '
+          f'learning_rate={sampled_learning_rate:.5f}, '
+          f'regularization={sampled_regularization:.5f}')
+    
+    model = SimpleNet(input_size, sampled_hidden_layer_size, num_classes)
+    training_stats = model.train(
+        X_train, y_train, X_val, y_val,
+        num_iters=2000,
+        batch_size=200,
+        learning_rate=sampled_learning_rate,
+        learning_rate_decay=0.95,
+        reg=sampled_regularization,
+        verbose=False
+    )
+    
+    validation_accuracy = (model.predict(X_val) == y_val).mean()
+    training_accuracy = (model.predict(X_train) == y_train).mean()
+    
+    training_results[
+        (sampled_hidden_layer_size, sampled_learning_rate, sampled_regularization)
+    ] = (training_accuracy, validation_accuracy)
+    
+    print(f'Train acc: {training_accuracy}, Val acc: {validation_accuracy}')
+    
+    if validation_accuracy > best_validation_accuracy:
+        best_validation_accuracy = validation_accuracy
+        best_net= model
 # ***** end of your code *****
 
 # visualize the weights of the best network

@@ -19,7 +19,7 @@ def load_pickle(f):
 
 def load_CIFAR_batch(filename):
     """ load single batch of cifar """
-    with open(filename, 'rb') as f:
+    with open(filename, 'rb') as f: 
         datadict = load_pickle(f)
         X = datadict['data']
         Y = datadict['labels']
@@ -50,7 +50,7 @@ def get_CIFAR10_data(num_training=49000, num_validation=1000, num_test=1000):
     we used for the SVM, but condensed to a single function.
     """
     # Load the raw CIFAR-10 data
-    cifar10_dir = 'datasets/cifar-10-batches-py'
+    cifar10_dir = "C:/Users/Guest01/ai-work-experience-2025/Neural network/work_exp_proj_ai/cifar-10-batches-py"
 
     # Cleaning up variables to prevent loading data multiple times (which may cause memory issue)
     try:
